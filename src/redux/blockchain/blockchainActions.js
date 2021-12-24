@@ -65,10 +65,15 @@ export const connect = () => {
             abi,
             CONFIG.CONTRACT_ADDRESS
           );
+          const TokenSmartContractObj = new Web3EthContract(
+            abi,
+            CONFIG.TOKEN_CONTRACT_ADDRESS
+          );
           dispatch(
             connectSuccess({
               account: accounts[0],
               smartContract: SmartContractObj,
+              tokenSmartContract : TokenSmartContractObj,
               web3: web3,
             })
           );

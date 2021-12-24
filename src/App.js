@@ -109,7 +109,13 @@ function App() {
       SYMBOL: "",
       ID: 0,
     },
-    NFT_NAME: "",
+    TOKEN_CONTRACT_ADDRESS: "",
+    TOKEN_SCAN_LINK: "",
+    TOKEN_NETWORK: {
+      NAME: "",
+      SYMBOL: "",
+      ID: 0
+    },    NFT_NAME: "",
     SYMBOL: "",
     MAX_SUPPLY: 1,
     WEI_COST: 0,
@@ -151,6 +157,43 @@ function App() {
         dispatch(fetchData(blockchain.account));
       });
   };
+  const tokenClaimNFTs = () => {
+    let cost = CONFIG.WEI_COST;
+    let gasLimit = CONFIG.GAS_LIMIT;
+    let totalCostWei = String(cost * mintAmount);
+    let totalGasLimit = String(gasLimit * mintAmount);
+    console.log("Cost: ", totalCostWei);
+    console.log("Gas limit: ", totalGasLimit);
+    setFeedback(`Minting your ${CONFIG.NFT_NAME}...`);
+    setClaimingNft(true);
+    blockchain.tokenSmartContract.methods
+      .approve({
+        spender: CONFIG.TOKEN_CONTRACT_ADDRESS,
+        amount: 10 * mintAmount,
+      });
+    blockchain.smartContract.methods
+      .mint(mintAmount)
+      .send({
+        gasLimit: String(totalGasLimit),
+        to: CONFIG.CONTRACT_ADDRESS,
+        from: blockchain.account,
+        value: totalCostWei,
+      })
+      .once("error", (err) => {
+        console.log(err);
+        setFeedback("Sorry, something went wrong please try again later.");
+        setClaimingNft(false);
+      })
+      .then((receipt) => {
+        console.log(receipt);
+        setFeedback(
+          `WOW, the ${CONFIG.NFT_NAME} is yours! go visit Opensea.io to view it.`
+        );
+        setClaimingNft(false);
+        dispatch(fetchData(blockchain.account));
+      });
+  };
+
 
   const decrementMintAmount = () => {
     let newMintAmount = mintAmount - 1;
@@ -352,7 +395,7 @@ function App() {
                     </s.Container>
                     <s.SpacerSmall />
                     <s.Container ai={"center"} jc={"center"} fd={"row"}>
-                      <StyledButton
+                    <StyledButton
                         disabled={claimingNft ? 1 : 0}
                         onClick={(e) => {
                           e.preventDefault();
@@ -360,7 +403,17 @@ function App() {
                           getData();
                         }}
                       >
-                        {claimingNft ? "BUSY" : "BUY"}
+                        {claimingNft ? "BUSY WITH ETH" : "BUY WITH ETH"}
+                      </StyledButton>
+                      <StyledButton
+                        disabled={claimingNft ? 1 : 0}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          tokenClaimNFTs();
+                          getData();
+                        }}
+                      >
+                        {claimingNft ? "BUSY WITH ROCKET" : "BUY WITH ROCKET"}
                       </StyledButton>
                     </s.Container>
                   </>
