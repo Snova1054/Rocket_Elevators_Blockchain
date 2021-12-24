@@ -13,9 +13,9 @@ contract("RocketElevators", (accounts) => {
       const symbol = await deployedContract.symbol();
       assert.equal(symbol, "REM")
     })
-    it("is paused", async () => {
-      const ispaused = await deployedContract.paused();
-      assert.equal(ispaused, true)
+    it("has correct max supply", async () => {
+      const maxSupplyIs = await deployedContract.maxSupply();
+      assert.equal(maxSupplyIs, 1000)
     })
     it("is not revealed", async () => {
       const isRevealed = await deployedContract.revealed();

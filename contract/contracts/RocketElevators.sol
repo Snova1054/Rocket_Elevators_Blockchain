@@ -1227,7 +1227,7 @@ contract RocketElevators is ERC721Enumerable, Ownable {
     uint256 public maxSupply = 1000;
     uint256 public maxMintAmount = 10;
     uint256 public nftPerAddressLimit = 10;
-    bool public paused = true;
+    bool public paused = false;
     bool public revealed = false;
     string public notRevealedUri;
     bool public onlyWhiteListed = true;
