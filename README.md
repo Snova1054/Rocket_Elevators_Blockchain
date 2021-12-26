@@ -7,6 +7,9 @@ Also you will need to deploy the contract on the Rinkeby network and insert the 
 
 ![image](https://user-images.githubusercontent.com/63308626/147414813-520e4893-2911-4233-a023-dfb8814b18e4.png)
 
+### Run tests
+You can run the tests by using a local account with Ganache and then by running the command `truffle test`
+
 # Function
 The website should have a pre-sale cost so the december 24th at 9AM the real sale should start and the price would be higher than the pre sale.
 The token will reveal itself the december 27th at 1pm!
