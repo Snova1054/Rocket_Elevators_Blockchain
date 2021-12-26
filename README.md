@@ -1,5 +1,5 @@
 # Rocket Elevator Blockchain
-Hi this is my project for the 12th week of our cohort. We created an app, you can click [here](https://afternoon-waters-45623.herokuapp.com/) and as you can see, you are able to mint our NFT created with the HashLips template! You can mint using ETH or Rocket Tokens!
+Hi this is my project for the 12th week of our cohort. We created an app, you can click [here](https://infinite-cliffs-00927.herokuapp.com/) and as you can see, you are able to mint our NFT created with the HashLips template! You can mint using ETH or Rocket Tokens!
 
 # How to use
 You can use the app locally by running the command `npm install` and then`npm run start` so you should be able to run the website locally.
