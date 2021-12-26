@@ -1246,6 +1246,7 @@ contract RocketElevators is ERC721Enumerable, Ownable {
     event PaymentSuccess(
         address payer,
         uint amount,
+        uint paymentId,
         uint date
     );
 
@@ -1260,7 +1261,7 @@ contract RocketElevators is ERC721Enumerable, Ownable {
         return baseURI;
     }
 
-    function mintWithRocketTokens(uint _mintAmount) public {
+    function mintWithRocketTokens(uint _mintAmount, uint paymentId) public {
         uint256 supply = totalSupply();
 
         ERC20 rocketToken = ERC20(RocketElevatorsTokenAddress);
@@ -1279,7 +1280,7 @@ contract RocketElevators is ERC721Enumerable, Ownable {
             addressMintedBalance[msg.sender]++;
             _safeMint(msg.sender, supply + i);
         }
-        emit PaymentSuccess(msg.sender, _mintAmount, block.timestamp);
+        emit PaymentSuccess(msg.sender, _mintAmount, paymentId, block.timestamp);
     }
 
     // public
