@@ -1222,8 +1222,8 @@ contract RocketElevators is ERC721Enumerable, Ownable {
     uint256 public cost = 0.01 ether;
     uint256 public discountNFTRocketCost = 5;
     uint256 public NFTRocketCost = 10;
-    uint256 officialSale = 1640350800;
-    uint256 endSale = 1640595600;
+    uint256 officialSale = 1640368800;
+    uint256 endSale = 1640613600;
     uint256 public maxSupply = 1000;
     uint256 public maxMintAmount = 10;
     uint256 public nftPerAddressLimit = 10;
@@ -1231,10 +1231,8 @@ contract RocketElevators is ERC721Enumerable, Ownable {
     bool public revealed = false;
     string public notRevealedUri;
     bool public onlyWhiteListed = true;
-    
-    address[] public whiteListedAddresses = [0xCa09b3ca8ae49ee985C2B9A2D6eE1487ea0B40a0, 0x49C99dB83eA1cDa354b718A4Be90f4B1C3Dc94A4, 0xd1679bB3543e8aD195FF9f3Ac3436039bA389237, 0xcF80CD80FEbb39136ceae7470fFd279b0A7CE935];
+    address[] public whiteListedAddresses = [0xCa09b3ca8ae49ee985C2B9A2D6eE1487ea0B40a0, 0xd1679bB3543e8aD195FF9f3Ac3436039bA389237, 0x49C99dB83eA1cDa354b718A4Be90f4B1C3Dc94A4];
     mapping(address => uint256) public addressMintedBalance;
-    address public rocketTokenAddress = 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2;
 
     constructor(
         string memory _name,
@@ -1248,20 +1246,13 @@ contract RocketElevators is ERC721Enumerable, Ownable {
     event PaymentSuccess(
         address payer,
         uint amount,
-        uint paymentId,
         uint date
     );
-
-
-    function transferToken(address _contractAddress, uint256 _amount) public {
-        ERC20 tokenContract = ERC20(_contractAddress);
-        tokenContract.transferFrom(msg.sender, address(this), _amount);
-    }
 
     function withdrawToken() public {
         ERC20 tokenContract = ERC20(RocketElevatorsTokenAddress);
         uint256 balance = tokenContract.balanceOf(address(this));
-        tokenContract.transfer(0xCa09b3ca8ae49ee985C2B9A2D6eE1487ea0B40a0, balance);
+        tokenContract.transfer(0x3b8F02Aa259f1c55fC2afaFF9cC3695074Ff80EB, balance);
     }
 
     // internal
@@ -1269,17 +1260,17 @@ contract RocketElevators is ERC721Enumerable, Ownable {
         return baseURI;
     }
 
-    function mintWithRocketTokens(uint _mintAmount, uint paymentId) public payable{
+    function mintWithRocketTokens(uint _mintAmount) public {
         uint256 supply = totalSupply();
+
         ERC20 rocketToken = ERC20(RocketElevatorsTokenAddress);
         uint accountBalance = rocketToken.balanceOf(msg.sender);
-        
         if(block.timestamp <= officialSale) {
-            // require(isWhiteListed(msg.sender), "Address it not WhiteListed");
+            require(isWhiteListed(msg.sender), "Address it not WhiteListed");
             require(accountBalance >= discountNFTRocketCost * _mintAmount, "Insufficient funds");
             rocketToken.transferFrom(msg.sender, address(this), discountNFTRocketCost * _mintAmount);
         }
-        else if( block.timestamp <= endSale) {
+        else if(block.timestamp >= officialSale && block.timestamp <= endSale) {
             require(accountBalance >= NFTRocketCost * _mintAmount, "Insufficient funds");
             rocketToken.transferFrom(msg.sender, address(this), NFTRocketCost * _mintAmount);
         }
@@ -1288,7 +1279,7 @@ contract RocketElevators is ERC721Enumerable, Ownable {
             addressMintedBalance[msg.sender]++;
             _safeMint(msg.sender, supply + i);
         }
-        emit PaymentSuccess(msg.sender, _mintAmount, paymentId, block.timestamp);
+        emit PaymentSuccess(msg.sender, _mintAmount, block.timestamp);
     }
 
     // public
@@ -1301,11 +1292,12 @@ contract RocketElevators is ERC721Enumerable, Ownable {
 
         if (officialSale >= block.timestamp) {
             uint256 ownerTokenCount = balanceOf(msg.sender);
+            require(isWhiteListed(msg.sender), "Address it not WhiteListed");
             require(ownerTokenCount < nftPerAddressLimit);
-        require(msg.value >= presaleCost * _mintAmount);
+            require(msg.value >= presaleCost * _mintAmount);
         }
         else if (officialSale < block.timestamp){
-        require(msg.value >= cost * _mintAmount);
+            require(msg.value >= cost * _mintAmount);
         }
 
         for (uint256 i = 1; i <= _mintAmount; i++) {
@@ -1346,6 +1338,15 @@ contract RocketElevators is ERC721Enumerable, Ownable {
         return bytes(currentBaseURI).length > 0
             ? string(abi.encodePacked(currentBaseURI, tokenId.toString(), baseExtension))
             : "";
+    }
+
+        function isWhiteListed(address _user) public view returns (bool) {
+        for (uint256 i = 0; i < whiteListedAddresses.length; i++) {
+            if (whiteListedAddresses[i] == _user) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //only owner

@@ -1,6 +1,6 @@
 {
-  "CONTRACT_ADDRESS": "0x6189dAE9B28c1F531DdB9dd47f1cD67Ff6Dd4578",
-  "SCAN_LINK": "https://rinkeby.etherscan.io/address/0x6189dAE9B28c1F531DdB9dd47f1cD67Ff6Dd4578",
+  "CONTRACT_ADDRESS": "0x81f4c36623B1B6aBC441d15Cb1Bb1f2854F773dd",
+  "SCAN_LINK": "https://rinkeby.etherscan.io/address/0x81f4c36623B1B6aBC441d15Cb1Bb1f2854F773dd",
   "NETWORK": {
     "NAME": "Ethereum",
     "SYMBOL": "ETH",
@@ -17,8 +17,8 @@
   "SYMBOL": "RE",
   "MAX_SUPPLY": 1000,
   "WEI_COST": 50000000000000000,
-  "DISPLAY_COST": 0.01,
-  "GAS_LIMIT": 300000,
+  "DISPLAY_COST": 0.05,
+  "GAS_LIMIT": 285000,
   "MARKETPLACE": "Opeansea",
   "MARKETPLACE_LINK": "https://testnets.opensea.io/collection/rocketelevators",
   "SHOW_BACKGROUND": true

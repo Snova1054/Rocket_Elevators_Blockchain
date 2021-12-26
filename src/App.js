@@ -115,7 +115,8 @@ function App() {
       NAME: "",
       SYMBOL: "",
       ID: 0
-    },    NFT_NAME: "",
+    },
+    NFT_NAME: "",
     SYMBOL: "",
     MAX_SUPPLY: 1,
     WEI_COST: 0,
@@ -157,7 +158,8 @@ function App() {
         dispatch(fetchData(blockchain.account));
       });
   };
-  const tokenClaimNFTs = () => {
+
+  const claimNFTsWithToken = () => {
     let cost = CONFIG.WEI_COST;
     let gasLimit = CONFIG.GAS_LIMIT;
     let totalCostWei = String(cost * mintAmount);
@@ -166,18 +168,20 @@ function App() {
     console.log("Gas limit: ", totalGasLimit);
     setFeedback(`Minting your ${CONFIG.NFT_NAME}...`);
     setClaimingNft(true);
+
     blockchain.tokenSmartContract.methods
-      .approve({
-        spender: CONFIG.TOKEN_CONTRACT_ADDRESS,
-        amount: 10 * mintAmount,
-      });
+    .approve(CONFIG.CONTRACT_ADDRESS, 10 * mintAmount)
+    .send({
+      gasLimit: String(totalGasLimit),
+      to: CONFIG.TOKEN_CONTRACT_ADDRESS,
+      from: blockchain.account
+    })
     blockchain.smartContract.methods
-      .mint(mintAmount)
+      .mintWithRocketTokens(mintAmount, 123)
       .send({
         gasLimit: String(totalGasLimit),
         to: CONFIG.CONTRACT_ADDRESS,
-        from: blockchain.account,
-        value: totalCostWei,
+        from: blockchain.account
       })
       .once("error", (err) => {
         console.log(err);
@@ -193,7 +197,6 @@ function App() {
         dispatch(fetchData(blockchain.account));
       });
   };
-
 
   const decrementMintAmount = () => {
     let newMintAmount = mintAmount - 1;
@@ -307,7 +310,7 @@ function App() {
                   style={{ textAlign: "center", color: "var(--accent-text)" }}
                 >
                   1 {CONFIG.SYMBOL} costs {CONFIG.DISPLAY_COST}{" "}
-                  {CONFIG.NETWORK.SYMBOL}.
+                  {CONFIG.NETWORK.SYMBOL}/10 ROCKET TOKENS.
                 </s.TextTitle>
                 <s.SpacerXSmall />
                 <s.TextDescription
@@ -395,7 +398,7 @@ function App() {
                     </s.Container>
                     <s.SpacerSmall />
                     <s.Container ai={"center"} jc={"center"} fd={"row"}>
-                    <StyledButton
+                      <StyledButton
                         disabled={claimingNft ? 1 : 0}
                         onClick={(e) => {
                           e.preventDefault();
@@ -403,21 +406,22 @@ function App() {
                           getData();
                         }}
                       >
-                        {claimingNft ? "BUSY WITH ETH" : "BUY WITH ETH"}
+                        {claimingNft ? "BUSY" : "BUY WITH ETH"}
                       </StyledButton>
                       <StyledButton
                         disabled={claimingNft ? 1 : 0}
                         onClick={(e) => {
                           e.preventDefault();
-                          tokenClaimNFTs();
+                          claimNFTsWithToken();
                           getData();
                         }}
                       >
-                        {claimingNft ? "BUSY WITH ROCKET" : "BUY WITH ROCKET"}
+                        {claimingNft ? "BUSY" : "BUY WITH ROCKET"}
                       </StyledButton>
                     </s.Container>
                   </>
                 )}
+                
               </>
             )}
             <s.SpacerMedium />
